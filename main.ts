@@ -15,6 +15,7 @@ class SpaceInvader {
     constructor() {
         this.shoots = [];
         this.invaders = [{x: 1, y: 1}, {x: 3, y: 2}];
+        
     }
 
     step() {
@@ -51,12 +52,14 @@ class SpaceInvader {
     }
 
     left () {
+        // music.playTone(Note.G, 180);
         if (this.ship.x > 0) {
             this.ship.x--;
         }
     }
 
     right () {
+        // music.playTone(Note.G, 180);
         if (this.ship.x < 4) {
             this.ship.x++;
         }
@@ -74,6 +77,9 @@ class SpaceInvader {
     }
 }
 
+music.setOnBoardSpeakerEnabled(__internal.__onOff(true));
+music.setVolume(60);
+
 let spaceInvaderGame = new SpaceInvader();
 
 input.onButtonPressed(Button.A, function () {
@@ -87,6 +93,10 @@ input.onButtonPressed(Button.B, function () {
 input.onPinReleased(TouchPin.P0, function () {
     spaceInvaderGame.shoot();
 });
+
+/*input.onSound(DetectedSound.Loud, function () {
+    spaceInvaderGame.shoot();
+});*/
 
 basic.forever(function () {
     spaceInvaderGame.step();
