@@ -14,14 +14,13 @@ class SpaceInvader {
 
     constructor() {
         this.shoots = [];
-        this.invaders = [{x: 1, y: 1}, {x: 3, y: 2}];
-        
+        this.invaders = [{x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 0}, {x: 3, y: 1}, {x: 4, y: 0}];
     }
 
     step() {
-        this.detectExplosions();
         this.moveShoots();
         this.moveInvaders();
+        this.detectExplosions();
         this.update();
     }
 
@@ -44,11 +43,16 @@ class SpaceInvader {
     }
 
     detectExplosions() {
-        /*this.shoots = this.shoots.filter((shoot: Point) => { 
-            let isColliding = this.invaders.find(shoot) === -1;
-            console.log(isColliding);
-            return isColliding;
-        });*/
+        this.explosions = [];
+        this.explosions = this.comparePoints(this.shoots, this.invaders, true);
+        this.shoots = this.comparePoints(this.shoots, this.explosions, false);
+        this.invaders = this.comparePoints(this.invaders, this.explosions, false);
+    }
+
+    comparePoints(pointsA: Point[], pointsB: Point[], keep: boolean) {
+        return pointsA.filter(pointA => 
+            pointsB.some(pointB => pointA.x === pointB.x && pointA.y === pointB.y) === keep
+        );
     }
 
     left () {
@@ -67,17 +71,20 @@ class SpaceInvader {
 
     update() {
         basic.clearScreen();
-        led.plotBrightness(this.ship.x, this.ship.y, 100);
-        this.shoots.forEach((value: Point) => {
-            led.plotBrightness(value.x, value.y, 50);
-        });
-        this.invaders.forEach((value: Point) => {
-            led.plotBrightness(value.x, value.y, 100);
+        this.lightPoints([this.ship], 100);
+        this.lightPoints(this.shoots, 50);
+        this.lightPoints(this.invaders, 100);
+        this.lightPoints(this.explosions, 255);
+    }
+
+    lightPoints(points: Point[], brightness: number) {
+        points.forEach((value: Point) => {
+            led.plotBrightness(value.x, value.y, brightness);
         });
     }
 }
 
-music.setOnBoardSpeakerEnabled(__internal.__onOff(true));
+music.setOnBoardSpeakerEnabled(false);
 music.setVolume(60);
 
 let spaceInvaderGame = new SpaceInvader();
@@ -90,12 +97,12 @@ input.onButtonPressed(Button.B, function () {
     spaceInvaderGame.right();
 });
 
-input.onPinReleased(TouchPin.P0, function () {
+input.onLogoEvent(TouchButtonEvent.Pressed, function () {
     spaceInvaderGame.shoot();
 });
 
 /*input.onSound(DetectedSound.Loud, function () {
-    spaceInvaderGame.shoot();
+  spaceInvaderGame.shoot();
 });*/
 
 basic.forever(function () {
