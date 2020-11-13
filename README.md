@@ -17,5 +17,3 @@ To edit this repository in MakeCode.
 * open [https://makecode.microbit.org/](https://makecode.microbit.org/)
 * click on **Import** then click on **Import URL**
 * paste **https://github.com/thomaslobjoie/microbit-space-invader** and click import
-
-<script src="https://makecode.com/gh-pages-embed.js"></script><script>makeCodeRender("https://thomaslobjoie.github.io/microbit-space-invader/", "thomaslobjoie/microbit-space-invader");</script>
